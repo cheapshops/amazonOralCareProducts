@@ -120,6 +120,12 @@ const getProductHtmlBySpookyJs = function(url, callback_success, callback_error 
         if( upc != "" && upc.indexOf("UPC:") != -1 ){
           upc = upc.replace("UPC:", "");
         }
+        if( upc != "" ){
+          var rawUpc = upc.split(" ");
+          if( rawUpc.length > 1 ){
+            upc = rawUpc.join(",");
+          }
+        }
 
         supplier = jQuery('#sellerProfileTriggerId') && jQuery('#sellerProfileTriggerId').text() || ""
 
