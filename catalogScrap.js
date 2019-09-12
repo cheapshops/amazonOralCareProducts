@@ -71,7 +71,7 @@ function scrap_catalog_page( urls, callback ){
 function startScraping(){
   var urls = [];
   for( i = 1; i < 6 ; i++ ){
-    var url = "https://www.amazon.com/s?i=beauty-intl-ship&bbn=16225006011&rh=n%3A16225006011%2Cn%3A10079992011&page=2&_encoding=UTF8&qid=1568302549&ref=sr_pg_"+i;
+    var url = "https://www.amazon.com/s?i=beauty-intl-ship&bbn=16225006011&rh=n%3A16225006011%2Cn%3A10079992011&page="+i+"&_encoding=UTF8&qid=1568302549&ref=";
     urls.push( url );
   }
   console.log(urls)
