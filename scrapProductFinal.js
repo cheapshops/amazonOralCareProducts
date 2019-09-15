@@ -33,8 +33,16 @@ function update_record( row_id, data, callback){
         } else {
             if( results.length > 0 ){
                 connection.query('UPDATE catalog SET ? WHERE ?', [data, { id: row_id }],function( err , rrrr){
-                    console.log('UPDATE HUA HAI!!!');
-                    callback();
+                  if( err ){
+                    console.log(err)
+                    console.log('ERROR in UPDATE....')
+                    connection.query('UPDATE catalog SET ? WHERE ?', [{scrapStatus:2}, { id: row_id }],function( err , rrrr){
+
+                    })
+                  } else {
+                    console.log('SUCCESS UPDATE HUA HAI.....');
+                  }
+                  callback();
                 });
             }else{
                 callback();
@@ -47,7 +55,7 @@ function scrapProductPage( row_id, url, row_asin, callback ){
 
   console.log("Scrapping:: " + url )
 
-  service.getProductHtmlBySpookyJs(url, (product) => {
+  service.getProductByPuppeteer(url, (product) => {
     console.log('success')
     console.log(product)
     update_record( row_id, product, function(){
@@ -90,19 +98,23 @@ function startScraping( rows ){
                 }
                 console.log('---------------------------------------------------------');
                 console.log('---------------------------------------------------------');
-                console.log('---------------------------------------------------------');
-                console.log('---------------------------------------------------------');
-                console.log('---------------------------------------------------------');
 
                 startScraping( rows );
             })
         }
-    }, 1000);
+    }, 2000);
 }
 
 
-function start(){
-    connection.query('select * from catalog where scrapStatus = ? order by id asc', 0, function (err, results) {
+function start( low, end ){
+  var q = "select * from catalog where scrapStatus = 0  AND id > "+low+" AND id < "+end+"  order by id asc";
+  if( low == 0  && end == 0 ){
+    q = "select * from catalog where scrapStatus = 0 order by id asc";
+  }
+
+  console.log( q )
+
+    connection.query(q, function (err, results) {
         if (err) {
 
         } else {
@@ -118,5 +130,24 @@ function start(){
 
 
 
+var args = process.argv.slice(2);
+console.log( args )
+var low = 0
+var end = 0
+if( args[0] ){
+  low = args[0]
+}
+if( args[1] ){
+  end = args[1]
+}
 
-start();
+console.log( low )
+console.log( end )
+
+start( low, end )
+
+// if( low != 0 && end != 0 ){
+//   start( low, end )
+// } else {
+//   console.log('pass limit!!')
+// }

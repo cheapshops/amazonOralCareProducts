@@ -47,7 +47,7 @@ function scrapProductPage( row_id, url, row_asin, callback ){
 
   console.log("Scrapping:: " + url )
 
-  service.getProductHtmlBySpookyJs(url, (product) => {
+  service.getProductByPuppeteer(url, (product) => {
     console.log('success')
     console.log(product)
     update_record( row_id, product, function(){
@@ -102,9 +102,9 @@ function startScraping( rows ){
 
 
 function start(){
-    connection.query('select * from catalog where scrapStatus = ? order by id asc', 0, function (err, results) {
+    connection.query('select * from catalog where scrapStatus = ? AND id < 2000 order by id asc', 0, function (err, results) {
         if (err) {
-
+          console.log( err )
         } else {
             if( results.length == 0){
                 console.log('All are done');
