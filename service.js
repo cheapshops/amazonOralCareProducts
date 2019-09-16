@@ -210,7 +210,69 @@ const getProductHtmlBySpookyJs = function(url, callback_success, callback_error 
   });
 }
 
+const getCatalogByPuppeteer = function(url, callback_success, callback_error ){
+  (async () => {
+      const browser = await puppeteer.launch({ headless: true });
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1920, height: 926 });
+      await page.goto(url,{
+        // networkIdleTimeout: 5000,
+        waitUntil: 'domcontentloaded',
+        timeout: 3000000
+      });
 
+      await page.setRequestInterception(true);
+
+      page.on('request', (req) => {
+        if(req.resourceType() === 'image'){
+            req.abort();
+        }
+        else {
+            req.continue();
+        }
+      })
+
+      await page.addScriptTag({url: 'https://code.jquery.com/jquery-3.2.1.min.js'})
+      // await page.addScriptTag({path: require.resolve('jquery.js')})
+
+      // await page.screenshot({path: 'buddy-screenshot.png'});
+
+      try{
+      // get hotel details
+      let productsList = await page.evaluate(() => {
+        var products = []
+        jQuery('.s-result-list').find('div[data-asin]').each(function(){
+          var url = $(this).find('a.a-link-normal').attr('href') || "";
+          if( url != ""){
+            url = "https://www.amazon.com" + url
+          }
+          var asin = $(this).attr('data-asin')
+
+          products.push({
+            asin: asin,
+            url: url
+          })
+        })
+        return products;
+      });
+
+      callback_success(productsList);
+      } catch(e){
+        console.log('puppeteer errr')
+        console.log(e)
+        callback_success([])
+      }
+
+      await browser.close();
+  })().catch((error) => {
+    console.log(error);  //---> 2
+    console.log('PUPP ERROR')
+    console.log('PUPP ERROR')
+    console.log('PUPP ERROR')
+    console.log('PUPP ERROR')
+    callback_success([])
+});;
+}
 
 const getProductByPuppeteer = function(url, callback_success, callback_error ){
   (async () => {
@@ -333,12 +395,20 @@ const getProductByPuppeteer = function(url, callback_success, callback_error ){
       }
 
       await browser.close();
-  })();
+  })().catch((error) => {
+    console.log(error);  //---> 2
+    console.log('PUPP ERROR')
+    console.log('PUPP ERROR')
+    console.log('PUPP ERROR')
+    console.log('PUPP ERROR')
+    callback_success({})
+});;
 }
 
 
 module.exports = {
   getCatalogHtmlBySpookyJs: getCatalogHtmlBySpookyJs,
   getProductHtmlBySpookyJs: getProductHtmlBySpookyJs,
-  getProductByPuppeteer: getProductByPuppeteer
+  getProductByPuppeteer: getProductByPuppeteer,
+  getCatalogByPuppeteer: getCatalogByPuppeteer
 }
