@@ -275,9 +275,10 @@ const getCatalogByPuppeteer = function(url, callback_success, callback_error ){
 });;
 }
 
-const getProductByPuppeteer = function(url, callback_success, callback_error ){
+const getProductByPuppeteer = function(url, headLess, callback_success, callback_error ){
   (async () => {
-      const browser = await puppeteer.launch({ headless: true });
+      // const browser = await puppeteer.launch({ headless: headLess });
+      const browser = await puppeteer.launch({ headless: headLess, executablePath: '/usr/bin/google-chrome' });
       const page = await browser.newPage();
       await page.setViewport({ width: 1920, height: 926 });
       await page.goto(url,{

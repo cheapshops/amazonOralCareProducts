@@ -55,7 +55,16 @@ function scrapProductPage( row_id, url, row_asin, callback ){
 
   console.log("Scrapping:: " + url )
 
-  service.getProductByPuppeteer(url, (product) => {
+
+
+  var headLess = true;
+  // if( row_id % 2 == 0 ){
+    // headLess = false;
+  // }
+
+  console.log( row_id  + ' headless :: ' + headLess )
+
+  service.getProductByPuppeteer(url, headLess, (product) => {
     console.log('success')
     console.log(product)
     update_record( row_id, product, function(){
