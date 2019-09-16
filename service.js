@@ -271,6 +271,7 @@ const getCatalogByPuppeteer = function(url, callback_success, callback_error ){
     console.log('PUPP ERROR')
     console.log('PUPP ERROR')
     callback_success([])
+    browser.close()
 });;
 }
 
@@ -392,6 +393,7 @@ const getProductByPuppeteer = function(url, callback_success, callback_error ){
         console.log('puppeteer errr')
         console.log(e)
         callback_success({})
+
       }
 
       await browser.close();
@@ -402,6 +404,7 @@ const getProductByPuppeteer = function(url, callback_success, callback_error ){
     console.log('PUPP ERROR')
     console.log('PUPP ERROR')
     callback_success({})
+    browser.close();
 });;
 }
 
